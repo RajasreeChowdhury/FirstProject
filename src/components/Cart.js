@@ -1,45 +1,7 @@
 import React from 'react';
+import { View, Text, Button, FlatList } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart } from '../redux/actions/cartActions';
-
-const styles = {
-  container: {
-    maxWidth: '600px',
-    margin: '0 auto',
-    padding: '20px',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-    borderRadius: '8px',
-    backgroundColor: '#fff',
-    marginTop: '20px',
-  },
-  item: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottom: '1px solid #ddd',
-    padding: '10px 0',
-  },
-  itemName: {
-    flex: '1',
-  },
-  itemQuantity: {
-    marginLeft: '10px',
-    color: '#888',
-  },
-  removeButton: {
-    backgroundColor: '#f44336',
-    color: '#fff',
-    padding: '5px 10px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-  total: {
-    marginTop: '20px',
-    textAlign: 'right',
-    fontSize: '1.2rem',
-  },
-};
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -53,32 +15,67 @@ const Cart = () => {
     return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
   };
 
-  return (
-    <div style={styles.container}>
-      <h2>Your Cart</h2>
-      {cart.length === 0 ? (
-        <p>Your cart is empty</p>
-      ) : (
-        <div>
-          {cart.map((cartItem) => (
-            <div key={cartItem.product.id} style={styles.item}>
-              <div style={styles.itemName}>
-                {cartItem.product.name} - ${cartItem.product.price.toFixed(2)}
-              </div>
-              <div style={styles.itemQuantity}>Quantity: {cartItem.quantity}</div>
-              <button
-                style={styles.removeButton}
-                onClick={() => handleRemove(cartItem.product.id)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <div style={styles.total}>Total: ${calculateTotal().toFixed(2)}</div>
-        </div>
-      )}
-    </div>
+  const renderItem = ({ item }) => (
+    <View style={styles.item}>
+      <View style={styles.itemDetails}>
+        <Text>{item.product.name} - ${item.product.price.toFixed(2)}</Text>
+        <Text>Quantity: {item.quantity}</Text>
+      </View>
+      <Button
+        title="Remove"
+        onPress={() => handleRemove(item.product.id)}
+        color="#f44336"
+      />
+    </View>
   );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.heading}>Your Cart</Text>
+      {cart.length === 0 ? (
+        <Text>Your cart is empty</Text>
+      ) : (
+        <View>
+          <FlatList
+            data={cart}
+            keyExtractor={(item) => item.product.id}
+            renderItem={renderItem}
+          />
+          <Text style={styles.total}>Total: ${calculateTotal().toFixed(2)}</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+const styles = {
+  container: {
+    flex: 1,
+    padding: 20,
+    marginTop: 20,
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    paddingVertical: 10,
+  },
+  itemDetails: {
+    flex: 1,
+  },
+  total: {
+    marginTop: 20,
+    textAlign: 'right',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 };
 
 export default Cart;

@@ -1,63 +1,71 @@
 import React from 'react';
+import { View, Text } from 'react-native';
 import { useSelector } from 'react-redux';
-
-const styles = {
-  container: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    padding: '20px',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-    borderRadius: '8px',
-    backgroundColor: '#fff',
-    marginTop: '20px',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginTop: '10px',
-  },
-  th: {
-    backgroundColor: '#f2f2f2',
-    padding: '10px',
-    borderBottom: '1px solid #ddd',
-    textAlign: 'left',
-  },
-  td: {
-    padding: '10px',
-    borderBottom: '1px solid #ddd',
-  },
-};
 
 const OrderTable = () => {
   const cart = useSelector((state) => state.cart);
 
   return (
-    <div style={styles.container}>
-      <h2>Order History</h2>
+    <View style={styles.container}>
+      <Text style={styles.heading}>Order History</Text>
       {cart.length === 0 ? (
-        <p>No orders yet</p>
+        <Text>No orders yet</Text>
       ) : (
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Product</th>
-              <th style={styles.th}>Quantity</th>
-              <th style={styles.th}>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cart.map((cartItem) => (
-              <tr key={cartItem.product.id}>
-                <td style={styles.td}>{cartItem.product.name}</td>
-                <td style={styles.td}>{cartItem.quantity}</td>
-                <td style={styles.td}>${(cartItem.product.price * cartItem.quantity).toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <Text style={styles.th}>Product</Text>
+            <Text style={styles.th}>Quantity</Text>
+            <Text style={styles.th}>Total</Text>
+          </View>
+          {cart.map((cartItem) => (
+            <View key={cartItem.product.id} style={styles.tableRow}>
+              <Text style={styles.td}>{cartItem.product.name}</Text>
+              <Text style={styles.td}>{cartItem.quantity}</Text>
+              <Text style={styles.td}>${(cartItem.product.price * cartItem.quantity).toFixed(2)}</Text>
+            </View>
+          ))}
+        </View>
       )}
-    </div>
+    </View>
   );
+};
+
+const styles = {
+  container: {
+    flex: 1,
+    padding: 20,
+    marginTop: 20,
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  table: {
+    width: '100%',
+    marginTop: 10,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    paddingVertical: 10,
+  },
+  th: {
+    flex: 1,
+    backgroundColor: '#f2f2f2',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    textAlign: 'left',
+  },
+  td: {
+    flex: 1,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
 };
 
 export default OrderTable;

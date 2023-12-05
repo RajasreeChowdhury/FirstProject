@@ -14,4 +14,3 @@ ShoeCart is a simple React Native application for managing a shoe store. It incl
 - Redux Toolkit
 - React Navigation
 - Expo
-- Stripe React Native (for payment functionality, not implemented)

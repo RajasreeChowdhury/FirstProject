@@ -1,36 +1,7 @@
 import React from 'react';
+import { View, Text, Button, FlatList } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToCart } from '../redux/actions/cartActions';
-
-const styles = {
-  container: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    padding: '20px',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-    borderRadius: '8px',
-    backgroundColor: '#fff',
-    marginTop: '20px',
-  },
-  product: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottom: '1px solid #ddd',
-    padding: '10px 0',
-  },
-  productName: {
-    flex: '1',
-  },
-  addToCartButton: {
-    backgroundColor: '#4caf50',
-    color: '#fff',
-    padding: '8px 15px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-};
 
 const ProductList = () => {
   const products = useSelector((state) => state.products);
@@ -40,26 +11,66 @@ const ProductList = () => {
     dispatch(addToCart({ product, quantity: 1 }));
   };
 
-  return (
-    <div style={styles.container}>
-      <h2>Product List</h2>
-      {products.map((product) => (
-        <div key={product.id} style={styles.product}>
-          <div style={styles.productName}>
-            <h3>{product.name}</h3>
-            <p>{product.description}</p>
-            <p>Price: ${product.price.toFixed(2)}</p>
-          </div>
-          <button
-            style={styles.addToCartButton}
-            onClick={() => handleAddToCart(product)}
-          >
-            Add to Cart
-          </button>
-        </div>
-      ))}
-    </div>
+  const renderItem = ({ item }) => (
+    <View style={styles.product}>
+      <View style={styles.productDetails}>
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text>{item.description}</Text>
+        <Text>Price: ${item.price.toFixed(2)}</Text>
+      </View>
+      <Button
+        title="Add to Cart"
+        onPress={() => handleAddToCart(item)}
+        style={styles.addToCartButton}
+      />
+    </View>
   );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.heading}>Product List</Text>
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+      />
+    </View>
+  );
+};
+
+const styles = {
+  container: {
+    flex: 1,
+    padding: 20,
+    marginTop: 20,
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  product: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    paddingVertical: 10,
+  },
+  productDetails: {
+    flex: 1,
+  },
+  productName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  addToCartButton: {
+    backgroundColor: '#4caf50',
+    color: '#fff',
+    padding: 8,
+    borderRadius: 4,
+  },
 };
 
 export default ProductList;
